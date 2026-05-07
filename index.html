@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulação Populacional — Diferenças Finitas</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="container">
+<header><h1 id="tituloPrincipalCNA" onclick="abrirCNA()" title="Clique para entender a animação de fundo">SIMULAÇÃO POPULACIONAsadasdasdadsadadsaL</h1><p>Júlio, Eduardo, Vandson e Raimundo</p><p>Método de Diferenças Finitas aplicado à difusão populacional</p></header>
+
+<section class="card"><h2>1. Configurar Simulação</h2>
+<div class="grid" style="grid-template-columns:1fr"><div><label>Cenário real para apresentar</label><select id="cenarioReal" onchange="aplicarCenarioReal()"><option value="personalizado">Personalizado</option><option value="saoluis">São Luís - população do Censo 2022</option><option value="uema">UEMA - alunos matriculados</option></select></div></div>
+<div class="grid">
+<div><label>Tipo de simulação</label><select id="tipoSimulacao"><option value="População">População</option><option value="Poluição">Poluição</option><option value="Calor">Calor</option><option value="Vírus">Vírus</option></select></div>
+<div><label>Tamanho da região</label><input type="number" id="tamanho" value="120" min="20"/></div>
+<div><label>Passos no tempo</label><input type="number" id="passos" value="250" min="20"/></div>
+<div><label>Coeficiente de difusão</label><input type="number" id="difusao" value="0.25" step="0.01" min="0.01" max="0.5"/></div>
+<div><label>Valor inicial no centro</label><input type="number" id="populacaoInicial" value="100" min="1"/></div>
+</div>
+<div class="grid" style="grid-template-columns:repeat(2,1fr)">
+<div><label>Velocidade da animação</label><input type="range" id="velocidade" min="10" max="200" value="60"/></div>
+<div><label>Modo visual</label><select id="modoVisual"><option value="linha">Gráfico de linha</option><option value="barra">Gráfico em barras</option></select></div>
+</div>
+<div class="buttons"><button onclick="iniciarSimulacao()">▶ Iniciar</button><button class="dark-button" onclick="pausarSimulacao()">⏸ Pausar</button><button class="success" onclick="continuarSimulacao()">▶ Continuar</button><button class="danger" onclick="reiniciarSimulacao()">🔄 Reiniciar</button><button class="ghost" onclick="irParaIteracoes()">📊 Ver iterações</button></div>
+</section>
+
+<section class="card"><div class="grid-2"><div><h2 id="tempoAtual">2. Tempo: 0</h2><canvas id="grafico"></canvas></div><div class="status-box"><h3>O que está acontecendo?</h3><p id="mensagemDidatica">A simulação ainda não começou.</p><p><strong>Ponto central:</strong> local onde o valor inicial é colocado.</p><p><strong>Difusão:</strong> espalhamento gradual para os vizinhos.</p><p><strong>Estabilidade:</strong> use D entre 0.01 e 0.50.</p></div></div>
+<div class="stats"><div class="stat"><span>Pico atual</span><strong id="picoAtual">0</strong></div><div class="stat"><span>Total conservado</span><strong id="totalPopulacao">0</strong></div><div class="stat"><span>Posição do pico</span><strong id="posicaoPico">0</strong></div><div class="stat"><span>Tempo atual</span><strong id="tempoCard">0</strong></div></div></section>
+
+<section class="card"><h2>3. Mapa de Calor da Evolução</h2><p class="info">Quanto mais clara a cor, maior é a concentração naquele ponto da região.</p><canvas id="mapaCalor" width="1000" height="260"></canvas></section>
+
+<section class="card"><h2>4. Aplicações que usamos no dia a dia</h2><p class="info">A ideia de difusão aparece em tecnologias que as pessoas usam, mesmo sem perceber. Abaixo estão dois exemplos didáticos.</p>
+<div class="grid-side" style="margin-top:16px">
+<div class="mini-card">
+<h3>📱 Redes Sociais</h3>
+<div class="app-controls">
+  <div>
+    <label>Velocidade da viralização</label>
+    <input type="range" id="socialVelocidade" min="0.5" max="4" step="0.1" value="1.4">
+  </div>
+  <div>
+    <label>Número de perfis</label>
+    <input type="range" id="socialPontos" min="12" max="42" step="1" value="24">
+  </div>
+  <div>
+    <label>Alcance entre perfis</label>
+    <input type="range" id="socialAlcance" min="70" max="180" step="5" value="125">
+  </div>
+</div>
+<div class="app-animation">
+  <span class="app-badge">Difusão de informação</span>
+  <span class="pulse-icon">📱</span>
+  <canvas id="animRedeSocial" width="520" height="230"></canvas>
+</div>
+<p>Quando uma postagem sai de poucas pessoas e alcança muitas, ocorre um comportamento parecido com difusão de informação.</p>
+<p class="app-note">Aqui, os pontos representam perfis. As conexões representam alcance, compartilhamentos ou recomendações do algoritmo.</p>
+<span class="tag">Exemplo: viralização de conteúdo</span>
+<div class="formula">\[I_i^{n+1}=I_i^n+D(I_{i+1}^n-2I_i^n+I_{i-1}^n)\]</div>
+</div>
+
+<div class="mini-card">
+<h3>🌦️ Previsão do Tempo</h3>
+<div class="app-controls">
+  <div>
+    <label>Velocidade do clima</label>
+    <input type="range" id="climaVelocidade" min="0.5" max="4" step="0.1" value="1.2">
+  </div>
+  <div>
+    <label>Intensidade térmica</label>
+    <input type="range" id="climaIntensidade" min="0.4" max="2.5" step="0.1" value="1.2">
+  </div>
+  <div>
+    <label>Chuva / umidade</label>
+    <input type="range" id="climaChuva" min="5" max="70" step="1" value="36">
+  </div>
+</div>
+<div class="app-animation">
+  <span class="app-badge">Células climáticas</span>
+  <span class="pulse-icon">🌦️</span>
+  <canvas id="animPrevisaoTempo" width="520" height="230"></canvas>
+</div>
+<p>Modelos climáticos dividem uma região em células e calculam temperatura, umidade, vento e pressão ao longo do tempo.</p>
+<p class="app-note">Aqui, as células coloridas representam regiões de cálculo; as gotas representam umidade/chuva e as nuvens indicam deslocamento atmosférico.</p>
+<span class="tag">Exemplo: propagação de calor e umidade</span>
+<div class="formula">\[T_i^{n+1}=T_i^n+D(T_{i+1}^n-2T_i^n+T_{i-1}^n)\]</div>
+</div>
+</div></section>
+
+<section class="card"><h2>5. Visualização Avançada — São Luís 2D e 3D</h2><p class="info">Esta etapa usa o mapa enviado como referência visual e desenha uma camada de difusão por cima. A versão 2D mostra o espalhamento no mapa. A versão 3D mostra a concentração como altura.</p>
+<div class="buttons" style="grid-template-columns:repeat(2,1fr)"><button onclick="toggleMapa2D()">Mostrar / Ocultar Mapa 2D</button><button onclick="toggleMapa3D()">Mostrar / Ocultar Mapa 3D</button></div>
+<div id="areaMapa2D" style="display:none;margin-top:20px">
+  <h3>Mapa 2D Interativo — São Luís</h3>
+  <p class="info">
+    Este modo mostra a difusão em 2D sobre uma representação didática do mapa. 
+    Você pode digitar os valores e testar como a propagação muda.
+  </p>
+
+  <div class="controles-mapa">
+    <div>
+      <label>Valor inicial no centro</label>
+      <input type="number" id="valor2D" min="1" max="1000000" value="100" oninput="limitarCampo(this,1,1000000); desenharMapa2D(tempo||0)">
+    </div>
+    <div>
+      <label>Raio inicial</label>
+      <input type="number" id="raio2D" min="5" max="120" value="25" oninput="limitarCampo(this,5,120); desenharMapa2D(tempo||0)">
+    </div>
+    <div>
+      <label>Espalhamento 2D</label>
+      <input type="number" id="espalhamento2D" min="10" max="300" value="140" oninput="limitarCampo(this,10,300); desenharMapa2D(tempo||0)">
+    </div>
+    <div>
+      <label>Velocidade 2D</label>
+      <input type="number" id="velocidade2D" min="0.1" max="5" step="0.1" value="1.1" oninput="limitarCampo(this,0.1,5); desenharMapa2D(tempo||0)">
+    </div>
+  </div>
+
+  <div class="recomendacoes">
+    <strong>Recomendações para o 2D:</strong><br>
+    Valor inicial: até <strong>1.000.000</strong>. 
+    Raio inicial: entre <strong>5 e 120</strong>. 
+    Espalhamento: entre <strong>10 e 300</strong>. 
+    Velocidade: entre <strong>0.1 e 5</strong>.<br>
+    Para uma visualização bonita, use: valor 100 a 10.000, raio 20 a 50, espalhamento 100 a 180 e velocidade 1 a 2.
+  </div>
+
+  <p class="puxador-info">
+    Dica: arraste a bolinha azul no mapa 2D para alterar o raio/espalhamento. Os números mudam junto, e os números também movem a linha.
+  </p>
+
+  <canvas id="mapa2D" width="1000" height="520"></canvas>
+</div>
+<div id="areaMapa3D" style="display:none;margin-top:20px">
+  <h3>Mapa 3D interativo de São Luís</h3>
+  <p class="info">
+    Arraste o mouse sobre o bloco para girar a visualização. Use os controles ou a bolinha azul para alterar a altura,
+    o espalhamento e a velocidade da difusão.
+  </p>
+
+  <div class="controles-mapa">
+    <div>
+      <label>Valor inicial 3D</label>
+      <input type="number" id="valor3D" min="1" max="1000000" value="100" oninput="limitarCampo(this,1,1000000); desenharMapa3D(tempo||0)">
+    </div>
+    <div>
+      <label>Altura da difusão</label>
+      <input type="number" id="altura3D" min="10" max="220" value="95" oninput="limitarCampo(this,10,220); desenharMapa3D(tempo||0)">
+    </div>
+    <div>
+      <label>Espalhamento 3D</label>
+      <input type="number" id="espalhamento3D" min="10" max="180" value="70" oninput="limitarCampo(this,10,180); desenharMapa3D(tempo||0)">
+    </div>
+    <div>
+      <label>Velocidade 3D</label>
+      <input type="number" id="velocidade3D" min="0.1" max="5" step="0.1" value="1.1" oninput="limitarCampo(this,0.1,5); desenharMapa3D(tempo||0)">
+    </div>
+  </div>
+
+  <div class="recomendacoes">
+    <strong>Recomendações para o 3D:</strong><br>
+    Valor inicial: máximo <strong>1.000.000</strong>. 
+    Altura: entre <strong>10 e 220</strong>. 
+    Espalhamento: entre <strong>10 e 180</strong>. 
+    Velocidade: entre <strong>0.1 e 5</strong>.<br>
+    Para não exagerar visualmente, use altura entre <strong>70 e 130</strong>, espalhamento entre <strong>50 e 90</strong> e velocidade entre <strong>0.8 e 2</strong>.
+  </div>
+
+  <p class="help-3d">
+    Visualização didática: o mapa fica como textura superior do bloco, enquanto a elevação representa
+    a concentração da difusão.
+  </p>
+
+  <canvas id="mapa3D" width="1000" height="560"></canvas>
+</div></section>
+
+<section class="card" id="secaoIteracoes"><h2>6. Resultado de cada iteração</h2><p class="info">Clique no botão abaixo para abrir ou esconder uma tabela com os resultados numéricos. Ela funciona como um pequeno “banco de dados” calculado no navegador e acompanha a simulação em tempo real.</p><div class="buttons" style="grid-template-columns:repeat(2,1fr)"><button onclick="toggleTabela()">Mostrar / Ocultar Resultado de Cada Iteração</button><button class="ghost" onclick="baixarCSV()">⬇ Baixar resultados em CSV</button></div>
+<div id="areaTabela" class="hidden"><div class="table-wrapper"><table id="tabelaIteracoes"><thead><tr><th>Iteração</th><th>Pico</th><th>Total</th><th>Posição do pico</th><th>Centro</th><th>25%</th><th>50%</th><th>75%</th><th>Último ponto</th></tr></thead><tbody></tbody></table></div></div></section>
+
+<section class="card info"><h2>7. Explicação Matemática</h2><p>A simulação usa o método de diferenças finitas explícitas. A região é dividida em vários pontos, e cada ponto é atualizado de acordo com seus vizinhos.</p><div class="formula">\[P_i^{n+1}=P_i^n+D\left(P_{i+1}^n-2P_i^n+P_{i-1}^n\right)\]</div><p>Na versão 2D/3D, o ponto considera também os vizinhos de cima e de baixo:</p><div class="formula">\[P_{i,j}^{n+1}=P_{i,j}^n+D\left(P_{i+1,j}^n+P_{i-1,j}^n+P_{i,j+1}^n+P_{i,j-1}^n-4P_{i,j}^n\right)\]</div><ul class="explain-list"><li><strong>\(P_i^n\):</strong> valor no ponto atual, no tempo atual.</li><li><strong>\(P_i^{n+1}\):</strong> novo valor para o próximo instante.</li><li><strong>\(D\):</strong> coeficiente de difusão.</li><li><strong>2D/3D:</strong> a lógica é a mesma, com mais vizinhos e dimensão visual.</li></ul></section>
+</div>
+
+<div id="easterEggCNA">
+  <div class="easter-card">
+    <button class="easter-close" onclick="fecharCNA()">X</button>
+
+    <h2>🧩 Teoria da Animação de Fundo</h2>
+
+    <div id="textoCNA" class="easter-text">
+      <p>
+        A animação de fundo representa uma rede de pontos discretos conectados.
+        Cada número ou símbolo matemático funciona como um nó, e as linhas representam
+        conexões entre esses nós.
+      </p>
+
+      <p>
+        Quando o mouse se aproxima, ele cria conexões temporárias. Quando você clica no fundo,
+        as letras e símbolos próximos são puxados de uma vez, como se uma influência externa
+        concentrasse os elementos daquela região.
+      </p>
+
+      <p>
+        Depois disso, os pontos se soltam e voltam a se dispersar. Essa ideia funciona como
+        metáfora visual para concentração, propagação, interação entre vizinhos e estabilização.
+      </p>
+
+      <p>
+        No método de diferenças finitas, uma região contínua é dividida em pontos discretos.
+        Cada ponto é atualizado a partir dos pontos vizinhos. Por isso, o fundo animado conversa
+        com a teoria: pontos, vizinhos, conexões, perturbação, difusão e equilíbrio.
+      </p>
+
+      <div class="formula">
+        \[
+        P_i^{n+1}=P_i^n+D\left(P_{i+1}^n-2P_i^n+P_{i-1}^n\right)
+        \]
+      </div>
+
+      <p>
+        Portanto, a animação não é a equação literalmente, mas uma representação artística
+        inspirada na mesma lógica matemática.
+      </p>
+    </div>
+
+    <p class="easter-hint">
+      Aperte ESC ou clique fora para fechar.
+    </p>
+  </div>
+</div>
+
+<script src="./script.js"></script>
+</body>
+</html>
+
