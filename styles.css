@@ -263,3 +263,130 @@ canvas#grafico{background:white;border-radius:16px;padding:15px;margin-top:15px;
 @media(max-width:900px){.grid,.buttons,.stats,.grid-2,.grid-side{grid-template-columns:1fr}header h1{font-size:24px}}
 
 
+
+
+
+/* ===== SEÇÃO DE EMPRESAS ===== */
+.empresas-section .info{
+  max-width: 980px;
+}
+
+.empresas-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-top:20px;
+}
+
+.empresa-card{
+  background:rgba(2,6,23,.45);
+  border:1px solid rgba(125,211,252,.22);
+  border-radius:20px;
+  padding:18px;
+  min-height:260px;
+  transition:.25s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.empresa-card::before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  background:radial-gradient(circle at top,rgba(56,189,248,.18),transparent 45%);
+  opacity:0;
+  transition:.25s;
+}
+
+.empresa-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(56,189,248,.55);
+  box-shadow:0 0 30px rgba(56,189,248,.16);
+}
+
+.empresa-card:hover::before{
+  opacity:1;
+}
+
+.empresa-card > *{
+  position:relative;
+  z-index:2;
+}
+
+.empresa-logo{
+  height:58px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  letter-spacing:1px;
+  margin-bottom:14px;
+  color:white;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 0 24px rgba(56,189,248,.12);
+}
+
+.ansys-logo{
+  background:linear-gradient(135deg,#111827,#f59e0b);
+}
+
+.comsol-logo{
+  background:linear-gradient(135deg,#0f172a,#2563eb);
+}
+
+.nvidia-logo{
+  background:linear-gradient(135deg,#052e16,#22c55e);
+}
+
+.google-logo{
+  background:linear-gradient(135deg,#2563eb,#ef4444 45%,#facc15 70%,#22c55e);
+}
+
+.empresa-card h3{
+  color:#7dd3fc;
+  margin-bottom:10px;
+}
+
+.empresa-card p{
+  color:#dbeafe;
+  line-height:1.55;
+  font-size:14px;
+}
+
+.empresa-card span{
+  display:inline-block;
+  margin-top:12px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(56,189,248,.12);
+  border:1px solid rgba(56,189,248,.25);
+  color:#bae6fd;
+  font-size:12px;
+}
+
+.empresas-alerta{
+  margin-top:18px;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(56,189,248,.10);
+  border:1px solid rgba(56,189,248,.24);
+  color:#dbeafe;
+  line-height:1.6;
+}
+
+.empresas-alerta strong{
+  color:#7dd3fc;
+}
+
+@media(max-width:1000px){
+  .empresas-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:650px){
+  .empresas-grid{
+    grid-template-columns:1fr;
+  }
+}

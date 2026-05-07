@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
@@ -180,7 +180,66 @@
 <section class="card" id="secaoIteracoes"><h2>6. Resultado de cada iteração</h2><p class="info">Clique no botão abaixo para abrir ou esconder uma tabela com os resultados numéricos. Ela funciona como um pequeno “banco de dados” calculado no navegador e acompanha a simulação em tempo real.</p><div class="buttons" style="grid-template-columns:repeat(2,1fr)"><button onclick="toggleTabela()">Mostrar / Ocultar Resultado de Cada Iteração</button><button class="ghost" onclick="baixarCSV()">⬇ Baixar resultados em CSV</button></div>
 <div id="areaTabela" class="hidden"><div class="table-wrapper"><table id="tabelaIteracoes"><thead><tr><th>Iteração</th><th>Pico</th><th>Total</th><th>Posição do pico</th><th>Centro</th><th>25%</th><th>50%</th><th>75%</th><th>Último ponto</th></tr></thead><tbody></tbody></table></div></div></section>
 
-<section class="card info"><h2>7. Explicação Matemática</h2><p>A simulação usa o método de diferenças finitas explícitas. A região é dividida em vários pontos, e cada ponto é atualizado de acordo com seus vizinhos.</p><div class="formula">\[P_i^{n+1}=P_i^n+D\left(P_{i+1}^n-2P_i^n+P_{i-1}^n\right)\]</div><p>Na versão 2D/3D, o ponto considera também os vizinhos de cima e de baixo:</p><div class="formula">\[P_{i,j}^{n+1}=P_{i,j}^n+D\left(P_{i+1,j}^n+P_{i-1,j}^n+P_{i,j+1}^n+P_{i,j-1}^n-4P_{i,j}^n\right)\]</div><ul class="explain-list"><li><strong>\(P_i^n\):</strong> valor no ponto atual, no tempo atual.</li><li><strong>\(P_i^{n+1}\):</strong> novo valor para o próximo instante.</li><li><strong>\(D\):</strong> coeficiente de difusão.</li><li><strong>2D/3D:</strong> a lógica é a mesma, com mais vizinhos e dimensão visual.</li></ul></section>
+
+<section class="card empresas-section">
+  <h2>7. Empresas que usam essa ideia na prática</h2>
+  <p class="info">
+    A teoria por trás deste trabalho aparece em softwares e tecnologias reais. Em muitos casos,
+    a ideia central é transformar um fenômeno contínuo em pontos, células, malhas ou redes,
+    para que o computador consiga calcular aproximações passo a passo.
+  </p>
+
+  <div class="empresas-grid">
+    <article class="empresa-card">
+      <div class="empresa-logo ansys-logo">ANSYS</div>
+      <h3>Ansys</h3>
+      <p>
+        Usa simulação computacional em engenharia para analisar estruturas, fluidos,
+        calor, eletrônica e sistemas multifísicos.
+      </p>
+      <span>Aplicação: engenharia e simulação física</span>
+    </article>
+
+    <article class="empresa-card">
+      <div class="empresa-logo comsol-logo">COMSOL</div>
+      <h3>COMSOL Multiphysics</h3>
+      <p>
+        Trabalha com modelos físicos e simulações multifísicas, resolvendo problemas
+        que envolvem fenômenos acoplados e equações diferenciais.
+      </p>
+      <span>Aplicação: modelos físicos e PDEs</span>
+    </article>
+
+    <article class="empresa-card">
+      <div class="empresa-logo nvidia-logo">NVIDIA</div>
+      <h3>NVIDIA</h3>
+      <p>
+        Usa computação acelerada, simulação física, fluidodinâmica computacional e
+        gêmeos digitais para representar fenômenos reais em ambiente virtual.
+      </p>
+      <span>Aplicação: CFD, IA física e digital twins</span>
+    </article>
+
+    <article class="empresa-card">
+      <div class="empresa-logo google-logo">Google Maps</div>
+      <h3>Google Maps</h3>
+      <p>
+        Previsões de trânsito usam dados em tempo real, histórico e aprendizado de máquina.
+        O raciocínio é parecido com redes discretas: ruas, pontos e conexões.
+      </p>
+      <span>Aplicação: tráfego, rotas e redes</span>
+    </article>
+  </div>
+
+  <div class="empresas-alerta">
+    <strong>Ligação com o projeto:</strong>
+    assim como no método de diferenças finitas, esses sistemas trabalham com a ideia de
+    dividir o problema em partes menores, calcular cada parte e observar a evolução do fenômeno.
+  </div>
+</section>
+
+
+<section class="card info"><h2>8. Explicação Matemática</h2><p>A simulação usa o método de diferenças finitas explícitas. A região é dividida em vários pontos, e cada ponto é atualizado de acordo com seus vizinhos.</p><div class="formula">\[P_i^{n+1}=P_i^n+D\left(P_{i+1}^n-2P_i^n+P_{i-1}^n\right)\]</div><p>Na versão 2D/3D, o ponto considera também os vizinhos de cima e de baixo:</p><div class="formula">\[P_{i,j}^{n+1}=P_{i,j}^n+D\left(P_{i+1,j}^n+P_{i-1,j}^n+P_{i,j+1}^n+P_{i,j-1}^n-4P_{i,j}^n\right)\]</div><ul class="explain-list"><li><strong>\(P_i^n\):</strong> valor no ponto atual, no tempo atual.</li><li><strong>\(P_i^{n+1}\):</strong> novo valor para o próximo instante.</li><li><strong>\(D\):</strong> coeficiente de difusão.</li><li><strong>2D/3D:</strong> a lógica é a mesma, com mais vizinhos e dimensão visual.</li></ul></section>
 </div>
 
 <div id="easterEggCNA">
